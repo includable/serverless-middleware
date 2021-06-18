@@ -14,7 +14,8 @@ const createApigatewayAdapter = ({
 	responseAdditionalHeaders,
 	errorMappings
 } = {}) => (app, policies = []) => {
-	if (SENTRY_DSN && NODE_ENV !== 'development' && STAGE !== 'local' && !IS_OFFLINE) {
+	const shouldUseSentry = SENTRY_DSN && NODE_ENV !== 'development' && STAGE !== 'local' && !IS_OFFLINE;
+	if (shouldUseSentry) {
 		SentryTracing.addExtensionMethods();
 		Sentry.init({
 			dsn: SENTRY_DSN,
@@ -24,7 +25,6 @@ const createApigatewayAdapter = ({
 				new Sentry.Integrations.Http({ tracing: true })
 			]
 		});
-		app = Sentry.AWSLambda.wrapHandler(app);
 	}
 	const adapter = new ApiGatewayEventAdapter(
 		app,
@@ -35,7 +35,8 @@ const createApigatewayAdapter = ({
 		}),
 		new ApiGatewayNameMappingErrorConverter({
 			additionalHeaders: responseAdditionalHeaders,
-			mappings: errorMappings
+			mappings: errorMappings,
+			shouldUseSentry
 		}),
 		policies
 	);
@@ -63,9 +64,10 @@ const getMappingResponse = (mappings, error) => {
 };
 
 class ApiGatewayNameMappingErrorConverter {
-	constructor({ additionalHeaders = {}, mappings = {} } = {}) {
+	constructor({ additionalHeaders = {}, mappings = {}, shouldUseSentry = false } = {}) {
 		this.additionalHeaders = additionalHeaders;
 		this.mappings = mappings;
+		this.shouldUseSentry = shouldUseSentry;
 	}
 
 	convert(error) {
@@ -76,6 +78,10 @@ class ApiGatewayNameMappingErrorConverter {
 			this.additionalHeaders,
 			mappingResponse.headers
 		);
+
+		if (this.shouldUseSentry) {
+			Sentry.captureException(error);
+		}
 
 		return res(body, statusCode, headers);
 	}
