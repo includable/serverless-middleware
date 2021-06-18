@@ -3,12 +3,29 @@
 const { req, res } = require('@laconia/event').apigateway;
 const ApiGatewayResponse = require('@laconia/event/src/apigateway/ApiGatewayResponse');
 
+const Sentry = require('@sentry/serverless');
+const SentryTracing = require('@sentry/tracing');
+
+const { SENTRY_DSN, NODE_ENV, STAGE, IS_OFFLINE } = process.env;
+
 const createApigatewayAdapter = ({
 	functional = true,
 	responseStatusCode,
 	responseAdditionalHeaders,
 	errorMappings
 } = {}) => (app, policies = []) => {
+	if (SENTRY_DSN && NODE_ENV !== 'development' && STAGE !== 'local' && !IS_OFFLINE) {
+		SentryTracing.addExtensionMethods();
+		Sentry.init({
+			dsn: SENTRY_DSN,
+			environment: STAGE || NODE_ENV,
+			tracesSampleRate: 0.2,
+			integrations: [
+				new Sentry.Integrations.Http({ tracing: true })
+			]
+		});
+		app = Sentry.AWSLambda.wrapHandler(app);
+	}
 	const adapter = new ApiGatewayEventAdapter(
 		app,
 		new ApiGatewayParamsInputConverter(),
@@ -59,6 +76,7 @@ class ApiGatewayNameMappingErrorConverter {
 			this.additionalHeaders,
 			mappingResponse.headers
 		);
+
 		return res(body, statusCode, headers);
 	}
 }

@@ -33,3 +33,10 @@ export const app = async({ query, path, body }, { currentUser, /* dependences */
 
 export const handler = middleware(app, [auth]).register(dependencies);
 ```
+
+## Options
+
+### Sentry integration
+
+You can use Sentry by setting the `SENTRY_DSN` environment variable. 
+Note that this won't be active if you're running the function locally.

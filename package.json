@@ -23,6 +23,8 @@
   "homepage": "https://github.com/flexible-agency/serverless-middleware#readme",
   "dependencies": {
     "@laconia/core": "^1.11.0",
-    "@laconia/event": "^1.11.0"
+    "@laconia/event": "^1.11.0",
+    "@sentry/serverless": "^6.7.1",
+    "@sentry/tracing": "^6.7.1"
   }
 }
