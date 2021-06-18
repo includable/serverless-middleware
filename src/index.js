@@ -35,6 +35,7 @@ const apigateway = createApigatewayAdapter({
 const middleware = (app, policies) => laconia(apigateway(app, policies));
 
 module.exports = middleware;
+module.exports.middleware = middleware;
 module.exports.auth = function auth(_, ctx) {
 	ctx.currentUser = currentUser(ctx);
 };
