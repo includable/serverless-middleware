@@ -125,6 +125,10 @@ class ApiGatewayEventAdapter {
 	}
 
 	async handle(event, laconiaContext) {
+		if (event && event.source && event.source === 'serverless-plugin-warmup') {
+			return 'Lambda is warm';
+		}
+
 		try {
 			const input = await this.inputConverter.convert(event);
 

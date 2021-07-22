@@ -4,7 +4,7 @@
   "description": "Default serverless middleware for some of our projects.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,12 @@
   "dependencies": {
     "@laconia/core": "^1.11.0",
     "@laconia/event": "^1.11.0",
-    "@laconia/middleware-serverless-plugin-warmup": "^1.11.0",
     "@sentry/serverless": "^6.7.1",
     "@sentry/tracing": "^6.7.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.951.0",
+    "jest": "^27.0.6",
+    "lambda-sample-events": "^1.0.0"
   }
 }

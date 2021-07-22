@@ -1,7 +1,6 @@
 const laconia = require('@laconia/core');
 const currentUser = require('./currentUser');
 const createApigatewayAdapter = require('./api-adapter');
-const warmup = require("@laconia/middleware-serverless-plugin-warmup")();
 
 const errors = (statusCode) => (error) => {
 	const output = {
@@ -33,7 +32,7 @@ const apigateway = createApigatewayAdapter({
 	}
 });
 
-const middleware = warmup((app, policies) => laconia(apigateway(app, policies)));
+const middleware = (app, policies) => laconia(apigateway(app, policies));
 
 module.exports = middleware;
 module.exports.middleware = middleware;
