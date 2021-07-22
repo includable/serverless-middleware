@@ -17,6 +17,13 @@
     "@laconia/core" "^1.11.0"
     "@types/aws-lambda" "~8.10.31"
 
+"@laconia/middleware-serverless-plugin-warmup@^1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@laconia/middleware-serverless-plugin-warmup/-/middleware-serverless-plugin-warmup-1.11.0.tgz#2b5646bce2587fd28918c92441eab11cb75d580e"
+  integrity sha512-LCrz6eMejmfXBjJsuR8svVCWr80u9y9vHh+3GEIe+MEp3s95HqvCEowbhY9zs5tC2ioEDIVNVol3q9jbIRbpkQ==
+  dependencies:
+    "@types/aws-lambda" "8.10.61"
+
 "@sentry/core@6.7.1":
   version "6.7.1"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-6.7.1.tgz#c3aaa6415d06bec65ac446b13b84f073805633e3"

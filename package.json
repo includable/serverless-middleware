@@ -24,6 +24,7 @@
   "dependencies": {
     "@laconia/core": "^1.11.0",
     "@laconia/event": "^1.11.0",
+    "@laconia/middleware-serverless-plugin-warmup": "^1.11.0",
     "@sentry/serverless": "^6.7.1",
     "@sentry/tracing": "^6.7.1"
   }
