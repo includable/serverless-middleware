@@ -138,6 +138,7 @@ class ApiGatewayEventAdapter {
 
 			return this.outputConverter.convert(await this.app(input, laconiaContext));
 		} catch (error) {
+			console.error(error);
 			return this.errorConverter.convert(error);
 		}
 	}
