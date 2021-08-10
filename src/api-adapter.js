@@ -96,7 +96,7 @@ class ApiGatewayOutputConverter {
 	}
 
 	convert(output) {
-		if (output instanceof ApiGatewayResponse) {
+		if (output instanceof ApiGatewayResponse || (typeof output === 'object' && output.statusCode)) {
 			return {
 				...output,
 				headers: Object.assign(this.additionalHeaders, output.headers)
