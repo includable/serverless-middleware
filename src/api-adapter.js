@@ -155,6 +155,7 @@ class ApiGatewayParamsInputConverter {
 		const { body, headers, params } = req(event);
 		const { pathParameters, queryStringParameters } = event;
 		return {
+			...event,
 			...params || {},
 			headers,
 			params,
