@@ -1,6 +1,6 @@
 {
   "name": "@flexible-agency/serverless-middleware",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Default serverless middleware for some of our projects.",
   "main": "src/index.js",
   "scripts": {
