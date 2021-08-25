@@ -24,8 +24,8 @@
   "dependencies": {
     "@laconia/core": "^1.11.0",
     "@laconia/event": "^1.11.0",
-    "@sentry/serverless": "^6.7.1",
-    "@sentry/tracing": "^6.7.1"
+    "@sentry/serverless": "^6.11.0",
+    "@sentry/tracing": "^6.11.0"
   },
   "devDependencies": {
     "aws-sdk": "^2.951.0",
