@@ -48,3 +48,19 @@ serverless plugin.
 
 Simply install the serverless plugin, no other changes to your code necessary. 
 The middleware will automatically prevent code execution on warmup requests.
+
+
+
+<br /><br />
+
+---
+
+<div align="center">
+	<b>
+		<a href="https://schof.co/consulting/?utm_source=flexible-agency/serverless-middleware">Get professional support for this package →</a>
+	</b>
+	<br>
+	<sub>
+		Custom consulting sessions availabe for implementation support and feature development.
+	</sub>
+</div>
