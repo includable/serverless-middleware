@@ -152,6 +152,12 @@ class ApiGatewayEventAdapter {
 
 class ApiGatewayParamsInputConverter {
 	async convert(event) {
+		// EventBridge events shouldn't be parsed
+		if(!event.headers && event['detail-type'] && event.source){
+			return event
+		}
+
+		// Process events from API Gateway
 		const { body, headers, params } = req(event);
 		const { pathParameters, queryStringParameters } = event;
 		return {
