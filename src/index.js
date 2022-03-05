@@ -14,7 +14,7 @@ const errors = (statusCode) => (error) => {
 	if (process.env.STAGE !== 'production') {
 		output.debugContext = error;
 	} else if (statusCode >= 500) {
-		// TODO: send to sentry
+		// TODO
 	}
 
 	return ({ statusCode, body: { error: output } });

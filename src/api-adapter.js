@@ -3,29 +3,12 @@
 const { req, res } = require('@laconia/event').apigateway;
 const ApiGatewayResponse = require('@laconia/event/src/apigateway/ApiGatewayResponse');
 
-const Sentry = require('@sentry/serverless');
-const SentryTracing = require('@sentry/tracing');
-
-const { SENTRY_DSN, NODE_ENV, STAGE, IS_OFFLINE } = process.env;
-
 const createApigatewayAdapter = ({
 	functional = true,
 	responseStatusCode,
 	responseAdditionalHeaders,
 	errorMappings
 } = {}) => (app, policies = []) => {
-	const shouldUseSentry = SENTRY_DSN && NODE_ENV !== 'development' && STAGE !== 'local' && !IS_OFFLINE;
-	if (shouldUseSentry) {
-		SentryTracing.addExtensionMethods();
-		Sentry.init({
-			dsn: SENTRY_DSN,
-			environment: STAGE || NODE_ENV,
-			tracesSampleRate: 0.2,
-			integrations: [
-				new Sentry.Integrations.Http({ tracing: true })
-			]
-		});
-	}
 	const adapter = new ApiGatewayEventAdapter(
 		app,
 		new ApiGatewayParamsInputConverter(),
@@ -35,8 +18,7 @@ const createApigatewayAdapter = ({
 		}),
 		new ApiGatewayNameMappingErrorConverter({
 			additionalHeaders: responseAdditionalHeaders,
-			mappings: errorMappings,
-			shouldUseSentry
+			mappings: errorMappings
 		}),
 		policies
 	);
@@ -64,10 +46,9 @@ const getMappingResponse = (mappings, error) => {
 };
 
 class ApiGatewayNameMappingErrorConverter {
-	constructor({ additionalHeaders = {}, mappings = {}, shouldUseSentry = false } = {}) {
+	constructor({ additionalHeaders = {}, mappings = {} } = {}) {
 		this.additionalHeaders = additionalHeaders;
 		this.mappings = mappings;
-		this.shouldUseSentry = shouldUseSentry;
 	}
 
 	convert(error) {
@@ -78,10 +59,6 @@ class ApiGatewayNameMappingErrorConverter {
 			this.additionalHeaders,
 			mappingResponse.headers
 		);
-
-		if (this.shouldUseSentry) {
-			Sentry.captureException(error);
-		}
 
 		return res(body, statusCode, headers);
 	}

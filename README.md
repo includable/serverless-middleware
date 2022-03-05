@@ -36,11 +36,6 @@ export const handler = middleware(app, [auth]).register(dependencies);
 
 ## Options
 
-### Sentry integration
-
-You can use Sentry by setting the `SENTRY_DSN` environment variable. 
-Note that this won't be active if you're running the function locally.
-
 ### Warmup support
 
 Out of the box this middleware setup supports the [serverless-plugin-warmup](https://github.com/FidelLimited/serverless-plugin-warmup) 
