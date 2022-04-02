@@ -73,11 +73,16 @@ class ApiGatewayOutputConverter {
 	}
 
 	convert(output) {
-		if (output instanceof ApiGatewayResponse || (typeof output === 'object' && output.statusCode)) {
+		if (output instanceof ApiGatewayResponse) {
 			return {
 				...output,
 				headers: Object.assign(this.additionalHeaders, output.headers)
 			};
+		}
+
+		if (typeof output === 'object' && output.statusCode && output.body) {
+			this.statusCode = output.statusCode;
+			output = output.body;
 		}
 
 		return res(output, this.statusCode, this.additionalHeaders);
@@ -130,8 +135,8 @@ class ApiGatewayEventAdapter {
 class ApiGatewayParamsInputConverter {
 	async convert(event) {
 		// EventBridge events shouldn't be parsed
-		if(!event.headers && event['detail-type'] && event.source){
-			return event
+		if (!event.headers && event['detail-type'] && event.source) {
+			return event;
 		}
 
 		// Process events from API Gateway
