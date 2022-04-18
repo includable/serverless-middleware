@@ -13,8 +13,21 @@ const errors = (statusCode) => (error) => {
 
 	if (process.env.STAGE !== 'production') {
 		output.debugContext = error;
-	} else if (statusCode >= 500) {
-		// TODO
+	} else {
+		// Set Epsagon error
+		if (process.env.EPSAGON_TOKEN && !process.env.DISABLE_EPSAGON) {
+			try {
+				if (statusCode >= 500) {
+					// noinspection NpmUsedModulesInstalled, JSUnresolvedFunction
+					require('epsagon').setError(error);
+				} else {
+					// noinspection NpmUsedModulesInstalled, JSUnresolvedFunction
+					require('epsagon').setWarning(error);
+				}
+			} catch (e) {
+				console.log(e);
+			}
+		}
 	}
 
 	return ({ statusCode, body: { error: output } });
