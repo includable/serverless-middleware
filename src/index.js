@@ -38,9 +38,10 @@ const apigateway = createApigatewayAdapter({
 	errorMappings: {
 		'ValidationError': errors(400),
 		'Invalid': errors(400),
-		'not found': errors(404),
 		'Unauthorized': errors(401),
 		'Forbidden': errors(403),
+		'not found': errors(404),
+		'expired': errors(404),
 		'.*': errors(500)
 	}
 });
