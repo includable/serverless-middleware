@@ -82,6 +82,9 @@ class ApiGatewayOutputConverter {
 
 		if (typeof output === 'object' && output.statusCode && output.body) {
 			this.statusCode = output.statusCode;
+			if (output.headers && typeof output.headers === 'object') {
+				this.additionalHeaders = { ...this.additionalHeaders, ...output.headers };
+			}
 			output = output.body;
 		}
 
