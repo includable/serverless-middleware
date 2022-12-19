@@ -145,7 +145,9 @@ class ApiGatewayParamsInputConverter {
 		// Process events from API Gateway
 		const { body, headers, params } = req(event);
 		const { pathParameters, queryStringParameters } = event;
+		const method = event.requestContext && event.requestContext.http && event.requestContext.http.method;
 		return {
+			method: method ? method.toLowerCase() : undefined,
 			...event,
 			...params || {},
 			headers,
