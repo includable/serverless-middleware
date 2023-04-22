@@ -41,6 +41,7 @@ const apigateway = createApigatewayAdapter({
 		'Unauthorized': errors(401),
 		'Forbidden': errors(403),
 		'no access': errors(401),
+		'No access': errors(401),
 		'not found': errors(404),
 		'expired': errors(404),
 		'.*': errors(500)
