@@ -1,160 +1,130 @@
-// This is a slightly modified version of Laconia's API adapter to work around some peculiar issues
+const Response = require("./lib/Response");
+const Request = require("./lib/Request");
 
-const { req, res } = require('@laconia/event').apigateway;
-const ApiGatewayResponse = require('@laconia/event/src/apigateway/ApiGatewayResponse');
+const createApigatewayAdapter =
+  ({
+    responseStatusCode = 200,
+    responseAdditionalHeaders = {},
+    errorMappings = {},
+  } = {}) =>
+  (app, policies = []) => {
+    const adapter = new ApiGatewayEventAdapter(
+      app,
+      responseStatusCode,
+      responseAdditionalHeaders,
+      new ApiGatewayNameMappingErrorConverter({
+        additionalHeaders: responseAdditionalHeaders,
+        mappings: errorMappings,
+      }),
+      policies,
+    );
 
-const createApigatewayAdapter = ({
-	functional = true,
-	responseStatusCode,
-	responseAdditionalHeaders,
-	errorMappings
-} = {}) => (app, policies = []) => {
-	const adapter = new ApiGatewayEventAdapter(
-		app,
-		new ApiGatewayParamsInputConverter(),
-		new ApiGatewayOutputConverter({
-			statusCode: responseStatusCode,
-			additionalHeaders: responseAdditionalHeaders
-		}),
-		new ApiGatewayNameMappingErrorConverter({
-			additionalHeaders: responseAdditionalHeaders,
-			mappings: errorMappings
-		}),
-		policies
-	);
-
-	return functional ? adapter.toFunction() : adapter;
-};
+    return adapter.toFunction();
+  };
 
 module.exports = createApigatewayAdapter;
 
-//////// ===================
-
-const getMappingEntries = mappings =>
-	mappings instanceof Map ? mappings.entries() : Object.entries(mappings);
+const getMappingEntries = (mappings) =>
+  mappings instanceof Map ? mappings.entries() : Object.entries(mappings);
 
 const getMappingResponse = (mappings, error) => {
-	let mappingResponse = {};
-	for (const [errorRegex, mapping] of getMappingEntries(mappings)) {
-		if (error.name.match(errorRegex) || error.message.match(errorRegex)) {
-			mappingResponse = mapping(error);
-			break;
-		}
-	}
+  let mappingResponse = {};
+  for (const [errorRegex, mapping] of getMappingEntries(mappings)) {
+    if (error.name.match(errorRegex) || error.message.match(errorRegex)) {
+      mappingResponse = mapping(error);
+      break;
+    }
+  }
 
-	return mappingResponse;
+  return mappingResponse;
 };
 
 class ApiGatewayNameMappingErrorConverter {
-	constructor({ additionalHeaders = {}, mappings = {} } = {}) {
-		this.additionalHeaders = additionalHeaders;
-		this.mappings = mappings;
-	}
+  constructor({ additionalHeaders = {}, mappings = {} } = {}) {
+    this.additionalHeaders = additionalHeaders;
+    this.mappings = mappings;
+  }
 
-	convert(error) {
-		const mappingResponse = getMappingResponse(this.mappings, error);
-		const body = mappingResponse.body || error.message;
-		const statusCode = mappingResponse.statusCode || error.statusCode || 500;
-		const headers = Object.assign(
-			this.additionalHeaders,
-			mappingResponse.headers
-		);
+  convert(error) {
+    const mappingResponse = getMappingResponse(this.mappings, error);
+    const body = mappingResponse.body || error.message;
+    const statusCode = mappingResponse.statusCode || error.statusCode || 500;
+    const headers = Object.assign(
+      this.additionalHeaders,
+      mappingResponse.headers,
+    );
 
-		return res(body, statusCode, headers);
-	}
+    return new Response(body, statusCode, headers);
+  }
 }
-
-//////// ===================
-
-class ApiGatewayOutputConverter {
-	constructor({ statusCode = 200, additionalHeaders = {} } = {}) {
-		this.statusCode = statusCode;
-		this.additionalHeaders = additionalHeaders;
-	}
-
-	convert(output) {
-		if (output instanceof ApiGatewayResponse) {
-			return {
-				...output,
-				headers: Object.assign(this.additionalHeaders, output.headers)
-			};
-		}
-
-		if (typeof output === 'object' && output.statusCode && output.body) {
-			this.statusCode = output.statusCode;
-			if (output.headers && typeof output.headers === 'object') {
-				this.additionalHeaders = { ...this.additionalHeaders, ...output.headers };
-			}
-			output = output.body;
-		}
-
-		return res(output, this.statusCode, this.additionalHeaders);
-	}
-}
-
-//////// ===================
 
 class ApiGatewayEventAdapter {
-	constructor(
-		app,
-		inputConverter,
-		outputConverter,
-		errorConverter,
-		policies,
-	) {
-		this.app = app;
-		this.policies = policies || [];
-		this.inputConverter = inputConverter;
-		this.outputConverter = outputConverter;
-		this.errorConverter = errorConverter;
-	}
+  constructor(app, statusCode, additionalHeaders, errorConverter, policies) {
+    this.app = app;
+    this.policies = policies || [];
+    this.errorConverter = errorConverter;
+    this.statusCode = statusCode;
+    this.additionalHeaders = additionalHeaders;
+  }
 
-	async handle(event, laconiaContext) {
-		if (event && event.source && event.source === 'serverless-plugin-warmup') {
-			return 'Lambda is warm';
-		}
+  async handle(event, laconiaContext) {
+    if (event && event.source && event.source === "serverless-plugin-warmup") {
+      return "Lambda is warm";
+    }
 
-		try {
-			const input = await this.inputConverter.convert(event);
+    try {
+      let input = event;
 
-			for (let i = 0; i < this.policies.length; i++) {
-				await this.policies[i](input, laconiaContext);
-			}
+      // EventBridge events shouldn't be parsed
+      if (event.headers || !event["detail-type"] || !event.source) {
+        // Process events from API Gateway
+        const { body, headers, params, method } = new Request(event);
+        const { pathParameters, queryStringParameters } = event;
 
-			return this.outputConverter.convert(await this.app(input, laconiaContext));
-		} catch (error) {
-			console.error(error);
-			return this.errorConverter.convert(error);
-		}
-	}
+        input = {
+          method,
+          ...event,
+          ...(params || {}),
+          headers,
+          params,
+          query: queryStringParameters || {},
+          body: body || {},
+          path: pathParameters || {},
+        };
+      }
 
-	toFunction() {
-		return this.handle.bind(this);
-	}
-}
+      for (let i = 0; i < this.policies.length; i++) {
+        await this.policies[i](input, laconiaContext);
+      }
 
-//////// ===================
+      let output = await this.app(input, laconiaContext);
 
-class ApiGatewayParamsInputConverter {
-	async convert(event) {
-		// EventBridge events shouldn't be parsed
-		if (!event.headers && event['detail-type'] && event.source) {
-			return event;
-		}
+      if (output instanceof Response) {
+        return {
+          ...output,
+          headers: Object.assign(this.additionalHeaders, output.headers),
+        };
+      }
 
-		// Process events from API Gateway
-		const { body, headers, params } = req(event);
-		const { pathParameters, queryStringParameters } = event;
-		const method = event.requestContext && event.requestContext.http && event.requestContext.http.method;
-		return {
-			method: method ? method.toLowerCase() : undefined,
-			...event,
-			...params || {},
-			headers,
-			params,
-			query: queryStringParameters || {},
-			body: body || {},
-			path: pathParameters || {}
-		};
-	}
+      if (typeof output === "object" && output.statusCode && output.body) {
+        this.statusCode = output.statusCode;
+        if (output.headers && typeof output.headers === "object") {
+          this.additionalHeaders = {
+            ...this.additionalHeaders,
+            ...output.headers,
+          };
+        }
+        output = output.body;
+      }
+
+      return new Response(output, this.statusCode, this.additionalHeaders);
+    } catch (error) {
+      console.error(error);
+      return this.errorConverter.convert(error);
+    }
+  }
+
+  toFunction() {
+    return this.handle.bind(this);
+  }
 }

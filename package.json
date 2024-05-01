@@ -1,6 +1,6 @@
 {
-  "name": "@flexible-agency/serverless-middleware",
-  "version": "1.5.1",
+  "name": "@includable/serverless-middleware",
+  "version": "2.0.0-beta.1",
   "description": "Default serverless middleware for some of our projects.",
   "main": "src/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/flexible-agency/serverless-middleware.git"
+    "url": "git+https://github.com/includable/serverless-middleware.git"
   },
   "keywords": [
     "serverless",
@@ -18,16 +18,16 @@
   "author": "Thomas Schoffelen <thomas@schof.co>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/flexible-agency/serverless-middleware/issues"
+    "url": "https://github.com/includable/serverless-middleware/issues"
   },
-  "homepage": "https://github.com/flexible-agency/serverless-middleware#readme",
-  "dependencies": {
-    "@laconia/core": "^1.11.0",
-    "@laconia/event": "^1.11.0"
-  },
+  "homepage": "https://github.com/includable/serverless-middleware#readme",
   "devDependencies": {
-    "aws-sdk": "^2.951.0",
-    "jest": "^27.0.6",
-    "lambda-sample-events": "^1.0.0"
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "lambda-sample-events": "^1.0.1",
+    "prettier": "^3.2.5"
+  },
+  "dependencies": {
+    "@laconia/event": "^1.14.0"
   }
 }
