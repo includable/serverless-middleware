@@ -1,25 +1,25 @@
 # Serverless Middleware
 
-Some helpers for writing API endpoints using AWS Lambda and [Laconia](https://github.com/laconiajs/laconia).
+Some helpers for writing API endpoints using AWS Lambda.
 
 ---
 
 ## Installation
 
 ```shell
-yarn add @flexible-agency/serverless-middleware
+yarn add @includable/serverless-middleware
 ```
 
 ## Example usage
 
 ```js
-import { middleware, auth } from '@flexible-agency/serverless-middleware';
+import { middleware, auth } from '@includable/serverless-middleware';
 
-const dependencies = () => ({
-	// dependencies for the Laconia dependency injector
-});
+const dependencies = {
+	// dependencies for the dependency injector
+};
 
-export const app = async({ query, path, body }, { currentUser, /* dependences */ }) => {
+export const app = async ({ query, path, body }, { currentUser, /* dependences */ }) => {
 	// if `auth` is included in the second param of `middleware`, currentUser
 	// will be an object in the form of `{ id, groups, email, ... }`
 
@@ -52,7 +52,7 @@ The middleware will automatically prevent code execution on warmup requests.
 
 <div align="center">
 	<b>
-		<a href="https://schof.co/consulting/?utm_source=flexible-agency/serverless-middleware">Get professional support for this package →</a>
+		<a href="https://includable.com/consultancy/?utm_source=serverless-middleware">Get professional support for this package →</a>
 	</b>
 	<br>
 	<sub>

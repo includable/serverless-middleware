@@ -13,7 +13,7 @@
   "keywords": [
     "serverless",
     "middleware",
-    "laconia"
+    "apigateway"
   ],
   "author": "Thomas Schoffelen <thomas@schof.co>",
   "license": "MIT",
