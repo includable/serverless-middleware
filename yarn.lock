@@ -595,21 +595,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@laconia/core@^1.14.0":
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/@laconia/core/-/core-1.14.0.tgz#05a96cb5522693840bb4c52b2087ce54223e852e"
-  integrity sha512-FLk6tOV6QfsXfo7TJQ3xVuxDJZzRJbiUXGThjGWtPbZU2NoK+vZEuT12It5b8U8d30KqvzDVjFdmexQtuf32tg==
-  dependencies:
-    "@types/aws-lambda" "8.10.76"
-
-"@laconia/event@^1.14.0":
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/@laconia/event/-/event-1.14.0.tgz#a2297900ba60244f0458a65b69c5a9b43c84002a"
-  integrity sha512-o4JSUv4Ub3ARplh+v1dZmsfIYuq48qS4Z2GLjgdItdZx0QNHg9WT+C4kiPfzp+Kwchn89jYaPwy2QYa7E41r6g==
-  dependencies:
-    "@laconia/core" "^1.14.0"
-    "@types/aws-lambda" "~8.10.31"
-
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
@@ -628,16 +613,6 @@
   integrity sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==
   dependencies:
     "@sinonjs/commons" "^3.0.0"
-
-"@types/aws-lambda@8.10.76":
-  version "8.10.76"
-  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.76.tgz#a20191677f1f5e32fe1f26739b1d6fbbea9cf636"
-  integrity sha512-lCTyeRm3NWqSwDnoji0z82Pl0tsOpr1p+33AiNeidgarloWXh3wdiVRUuxEa+sY9S5YLOYGz5X3N3Zvpibvm5w==
-
-"@types/aws-lambda@~8.10.31":
-  version "8.10.137"
-  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.137.tgz#c9998a944541afdd6df0d159e9ec9c23dfe5fb40"
-  integrity sha512-YNFwzVarXAOXkjuFxONyDw1vgRNzyH8AuyN19s0bM+ChSu/bzxb5XPxYFLXoqoM+tvgzwR3k7fXcEOW125yJxg==
 
 "@types/babel__core@^7.1.14":
   version "7.1.15"
