@@ -1,2 +1,5 @@
 .idea
+.github
 tests
+.prettierrc.json
+yarn.lock
