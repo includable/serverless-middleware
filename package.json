@@ -13,9 +13,9 @@
     "url": "git+https://github.com/includable/serverless-middleware.git"
   },
   "keywords": [
-    "serverless",
-    "middleware",
     "apigateway",
+    "middleware",
+    "serverless",
     "lambda"
   ],
   "author": "Thomas Schoffelen <thomas@schof.co>",
