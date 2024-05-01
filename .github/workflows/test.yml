@@ -6,16 +6,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x, 20.x]
-
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node ${{ matrix.node-version }}
+      - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "yarn"
+          node-version: 20
+          cache: yarn
       - run: yarn
       - run: yarn test

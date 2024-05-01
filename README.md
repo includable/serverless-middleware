@@ -13,23 +13,26 @@ yarn add @includable/serverless-middleware
 ## Example usage
 
 ```js
-import { middleware, auth } from '@includable/serverless-middleware';
+import { middleware, auth } from "@includable/serverless-middleware";
 
 const dependencies = {
-	// dependencies for the dependency injector
+  // dependencies for the dependency injector
 };
 
-export const app = async ({ query, path, body }, { currentUser, /* dependences */ }) => {
-	// if `auth` is included in the second param of `middleware`, currentUser
-	// will be an object in the form of `{ id, groups, email, ... }`
+export const app = async (
+  { query, path, body },
+  { currentUser /* dependences */ },
+) => {
+  // if `auth` is included in the second param of `middleware`, currentUser
+  // will be an object in the form of `{ id, groups, email, ... }`
 
-	// your business logic goes here
+  // your business logic goes here
 
-	return {
-		success: true,
-		text: 'Hello, world!'
-	};
-}
+  return {
+    success: true,
+    text: "Hello, world!",
+  };
+};
 
 export const handler = middleware(app, [auth]).register(dependencies);
 ```
@@ -38,13 +41,11 @@ export const handler = middleware(app, [auth]).register(dependencies);
 
 ### Warmup support
 
-Out of the box this middleware setup supports the [serverless-plugin-warmup](https://github.com/FidelLimited/serverless-plugin-warmup) 
-serverless plugin. 
+Out of the box this middleware setup supports the [serverless-plugin-warmup](https://github.com/FidelLimited/serverless-plugin-warmup)
+serverless plugin.
 
-Simply install the serverless plugin, no other changes to your code necessary. 
+Simply install the serverless plugin, no other changes to your code necessary.
 The middleware will automatically prevent code execution on warmup requests.
-
-
 
 <br /><br />
 
