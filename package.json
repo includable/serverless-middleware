@@ -15,7 +15,8 @@
   "keywords": [
     "serverless",
     "middleware",
-    "apigateway"
+    "apigateway",
+    "lambda"
   ],
   "author": "Thomas Schoffelen <thomas@schof.co>",
   "license": "MIT",
