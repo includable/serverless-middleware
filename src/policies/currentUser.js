@@ -11,7 +11,7 @@ const currentUser = ({ event }) => {
   const claimGroups = claims["cognito:groups"]
     ? claims["cognito:groups"]
     : "[]";
-  const groups = claimGroups
+  const groups = Array.isArray(claimGroups) ? claimGroups : claimGroups
     .substring(1, claimGroups.length - 1)
     .split(" ")
     .filter(Boolean);
