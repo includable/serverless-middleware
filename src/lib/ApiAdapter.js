@@ -69,8 +69,13 @@ class ApiAdapter {
       return res;
     } catch (error) {
       console.error(error);
+
       OpenTelemetry.addSpanErrorAttributes(event, error);
-      return this.errorConverter.convert(error);
+
+      const res = this.errorConverter.convert(error);
+      OpenTelemetry.addSpanResponseAttributes(event, res);
+
+      return res;
     }
   }
 

@@ -1,6 +1,14 @@
 # Serverless Middleware
 
-Some helpers for writing API endpoints using AWS Lambda.
+A helper for writing APIs using AWS Lambda functions.
+
+### Features
+
+- Dependency injection for easy unit testing.
+- Pretty JSON error output, with status codes automatically determined based on error message.
+- Easy access to query strings and JSON body properties.
+- Serverless warmup plugin support.
+- OpenTelemetry support and additional span attributes, for use with [opentelemetry-lambda](https://github.com/open-telemetry/opentelemetry-lambda).
 
 ---
 
@@ -46,6 +54,10 @@ serverless plugin.
 
 Simply install the serverless plugin, no other changes to your code necessary.
 The middleware will automatically prevent code execution on warmup requests.
+
+### OpenTelemetry span enrichment
+
+If an active OpenTelemetry span is detected, event and response properties will automatically be added.
 
 <br /><br />
 
