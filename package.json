@@ -1,6 +1,6 @@
 {
   "name": "@includable/serverless-middleware",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Default serverless middleware for some of our projects.",
   "main": "src/index.js",
   "scripts": {
