@@ -10,6 +10,8 @@ const {
 const {
   ATTR_HTTP_USER_AGENT,
   ATTR_HTTP_FLAVOR,
+  ATTR_FAAS_TRIGGER,
+  FAAS_TRIGGER_VALUE_HTTP,
 } = require("@opentelemetry/semantic-conventions/incubating");
 
 const isApiGwEvent = (event) => {
@@ -85,6 +87,7 @@ class OpenTelemetry {
 
       if (isApiGwEvent(event)) {
         const fullUrl = getFullUrl(event);
+        span.setAttribute(ATTR_FAAS_TRIGGER, FAAS_TRIGGER_VALUE_HTTP);
         span.setAttribute(ATTR_HTTP_ROUTE, event.routeKey?.split(" ")[1]);
         fullUrl && span.setAttribute(ATTR_URL_FULL, fullUrl);
         span.setAttribute(
