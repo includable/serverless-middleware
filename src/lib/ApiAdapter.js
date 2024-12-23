@@ -1,5 +1,6 @@
 const Response = require("./Response");
 const Request = require("./Request");
+const OpenTelemetry = require("./OpenTelemetry");
 
 class ApiAdapter {
   constructor(app, policies, errorConverter) {
@@ -14,6 +15,8 @@ class ApiAdapter {
     if (event && event.source && event.source === "serverless-plugin-warmup") {
       return "Lambda is warm";
     }
+
+    OpenTelemetry.addSpanRequestAttributes(event);
 
     try {
       let input = event;
@@ -60,9 +63,13 @@ class ApiAdapter {
         output = output.body;
       }
 
-      return new Response(output, this.statusCode, this.additionalHeaders);
+      const res = new Response(output, this.statusCode, this.additionalHeaders);
+      OpenTelemetry.addSpanResponseAttributes(event, res);
+
+      return res;
     } catch (error) {
       console.error(error);
+      OpenTelemetry.addSpanErrorAttributes(event, error);
       return this.errorConverter.convert(error);
     }
   }
