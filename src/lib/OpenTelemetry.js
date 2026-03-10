@@ -1,18 +1,4 @@
 const { trace } = require("@opentelemetry/api");
-const {
-  ATTR_HTTP_ROUTE,
-  ATTR_URL_FULL,
-  ATTR_USER_AGENT_ORIGINAL,
-  ATTR_HTTP_REQUEST_METHOD,
-  ATTR_NETWORK_PROTOCOL_NAME,
-  ATTR_NETWORK_PROTOCOL_VERSION,
-} = require("@opentelemetry/semantic-conventions");
-const {
-  ATTR_HTTP_USER_AGENT,
-  ATTR_HTTP_FLAVOR,
-  ATTR_FAAS_TRIGGER,
-  FAAS_TRIGGER_VALUE_HTTP,
-} = require("@opentelemetry/semantic-conventions/incubating");
 
 const isApiGwEvent = (event) => {
   return (
@@ -87,20 +73,20 @@ class OpenTelemetry {
 
       if (isApiGwEvent(event)) {
         const fullUrl = getFullUrl(event);
-        span.setAttribute(ATTR_FAAS_TRIGGER, FAAS_TRIGGER_VALUE_HTTP);
-        span.setAttribute(ATTR_HTTP_ROUTE, event.routeKey?.split(" ")[1]);
-        fullUrl && span.setAttribute(ATTR_URL_FULL, fullUrl);
+        span.setAttribute("faas.trigger", "http");
+        span.setAttribute("http.route", event.routeKey?.split(" ")[1]);
+        fullUrl && span.setAttribute("url.full", fullUrl);
         span.setAttribute(
-          ATTR_HTTP_REQUEST_METHOD,
+          "http.request.method",
           event.requestContext?.http?.method,
         );
         span.setAttribute(
-          ATTR_USER_AGENT_ORIGINAL,
+          "http.user_agent.original",
           event.requestContext?.http?.userAgent,
         );
-        span.setAttribute(ATTR_NETWORK_PROTOCOL_NAME, "http");
+        span.setAttribute("network.protocol.name", "http");
         span.setAttribute(
-          ATTR_NETWORK_PROTOCOL_VERSION,
+          "network.protocol.version",
           event.requestContext?.http?.protocol?.split("/")?.[1],
         );
         span.setAttribute("http.request.id", event.requestContext?.requestId);
